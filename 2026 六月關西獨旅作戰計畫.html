@@ -14,13 +14,19 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     
-    <!-- Application Structure Plan: Designed as a "Tactical Command Center" (SPA Dashboard). The layout uses a responsive CSS Grid. Modules: 1. Budget Analytics, 2. Interactive Timeline (Now heavily detailed with precise timings and durations from the Word doc), 3. Procurement Intel (Sake, Beyblade, Clothes, Shrines, Airport, Donki), 4. Pre-trip Logistics & Critical Directives. -->
+    <!-- Chosen Palette: Warm Neutrals (Stone), Sakura Pink (#db2777), Matcha Green (#059669), Denim Blue (#3b82f6), and Gold (#eab308) -->
+    <!-- Application Structure Plan: Designed as a "Tactical Command Center" (SPA Dashboard) to synthesize the complex, multi-layered travel plan (V22). The layout uses a responsive CSS Grid. The main body is divided into 4 key interactive modules: 1. Budget Analytics (Visualizing the financial plan), 2. Interactive Timeline (Filtering the dense day-by-day itinerary), 3. Procurement Intel (A tabbed database for the specific shopping goals: Beyblades, Sake, Clothes, Donki), and 4. Critical Directives (Customs warnings). This logical grouping allows the traveler to instantly access exactly what they need based on their current context (e.g., checking budget vs. checking what to buy at the store) without scrolling linearly. -->
+    <!-- Visualization & Content Choices: 
+         - Budget -> Goal: Inform -> Method: Chart.js Doughnut Chart -> Interaction: Hover tooltips -> Justification: Best for showing part-to-whole relationships of the travel funds. 
+         - Itinerary -> Goal: Organize -> Method: Interactive Vertical Timeline -> Interaction: Day-selection buttons -> Justification: Hides irrelevant days to reduce cognitive load while traveling.
+         - Shopping Intel -> Goal: Organize & Compare -> Method: Interactive Tabbed Cards -> Interaction: Category switching -> Justification: Separates completely different shopping contexts (Toys vs. Alcohol vs. Clothes) into digestible views.
+         Confirming NO SVG/Mermaid. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 
     <style>
         body {
             font-family: 'Noto Sans TC', sans-serif;
-            background-color: #faf9f6; 
+            background-color: #faf9f6; /* Light warm neutral */
         }
         
         /* STRICT CHART CONTAINER STYLING */
@@ -40,9 +46,11 @@
             }
         }
 
+        /* Custom UI Elements */
         .hide-scroll::-webkit-scrollbar { display: none; }
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
 
+        /* Animations */
         .fade-in {
             animation: fadeIn 0.3s ease-in-out forwards;
         }
@@ -51,10 +59,11 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* Interactive States */
         .timeline-content { display: none; }
         .timeline-content.active { display: block; }
         .timeline-btn.active {
-            background-color: #db2777; 
+            background-color: #db2777; /* Pink 600 */
             color: white;
             border-color: #db2777;
             box-shadow: 0 4px 6px -1px rgba(219, 39, 119, 0.3);
@@ -62,6 +71,11 @@
 
         .shop-content { display: none; }
         .shop-content.active { display: block; }
+        .shop-btn.active {
+            border-bottom: 2px solid #db2777;
+            color: #db2777;
+            font-weight: 700;
+        }
     </style>
 </head>
 <body class="text-stone-800 antialiased selection:bg-pink-200 selection:text-pink-900 pb-24">
@@ -76,15 +90,12 @@
                 </div>
                 <h1 class="text-3xl md:text-4xl lg:text-5xl font-black text-stone-900 tracking-tight">大阪・京都 獨旅戰術儀表板</h1>
             </div>
-            <div class="flex flex-col items-start lg:items-end text-sm text-stone-500 font-medium w-full lg:w-auto">
-                <a href="https://docs.google.com/document/d/1h0IDiR7ydpkqOe0ZBcA8yeBGx_Jfy45YBZOwzEX3_pw/edit?usp=sharing" target="_blank" class="bg-indigo-50 text-indigo-700 px-4 py-2 rounded-lg border border-indigo-200 shadow-sm flex items-center mb-2 hover:bg-indigo-100 transition-colors w-full lg:w-auto justify-center lg:justify-start">
-                    <span class="mr-2 text-lg">📄</span> <span class="font-bold">Word 企劃書 (點擊同步參閱)</span>
-                </a>
-                <div class="bg-white px-4 py-2 rounded-lg border border-stone-200 shadow-sm flex items-center mb-2 w-full lg:w-auto justify-center lg:justify-start">
+            <div class="flex flex-col items-start lg:items-end text-sm text-stone-500 font-medium">
+                <div class="bg-white px-4 py-2 rounded-lg border border-stone-200 shadow-sm flex items-center mb-2">
                     <span class="mr-2">✈️</span> 捷星去程 (18:20) ➔ 虎航回程 (19:50)
                 </div>
-                <div class="bg-white px-4 py-2 rounded-lg border border-stone-200 shadow-sm flex items-center w-full lg:w-auto justify-center lg:justify-start">
-                    <span class="mr-2">🏨</span> 基地：<a href="https://maps.app.goo.gl/oqakMSPYP7h9EJsR9" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold transition-colors ml-1">Red Roof Plus Namba (難波)</a>
+                <div class="bg-white px-4 py-2 rounded-lg border border-stone-200 shadow-sm flex items-center">
+                    <span class="mr-2">🏨</span> 基地：<a href="https://www.google.com/maps/search/?api=1&query=Red+Roof+Plus+Osaka+Namba" target="_blank" class="text-blue-600 hover:underline">Red Roof Plus Namba (難波)</a>
                 </div>
             </div>
         </header>
@@ -92,7 +103,7 @@
         <!-- Main Dashboard Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
 
-            <!-- COLUMN 1: Logistics & Budget -->
+            <!-- COLUMN 1: Logistics & Budget (Spans 4 cols on Desktop) -->
             <div class="lg:col-span-4 flex flex-col gap-6">
                 
                 <!-- Section 1: Financial Overview -->
@@ -104,6 +115,7 @@
                         <p class="text-xs text-stone-400 mt-1">預估總花費：NT$ 47,340 (中位數)</p>
                     </div>
                     
+                    <!-- Strict Chart Container -->
                     <div class="chart-container mb-6">
                         <canvas id="budgetChart"></canvas>
                     </div>
@@ -128,62 +140,25 @@
                     </div>
                 </section>
 
-                <!-- Section 1.5: Pre-trip Logistics -->
-                <section class="bg-indigo-50 p-5 md:p-6 rounded-2xl shadow-sm border border-indigo-100 relative overflow-hidden">
-                    <h2 class="text-lg font-bold text-indigo-900 mb-3 flex items-center relative z-10">
-                        <span class="mr-2">🧳</span> 行前戰備與金流
-                    </h2>
-                    <ul class="space-y-3 text-sm text-indigo-800 relative z-10">
-                        <li class="flex items-start">
-                            <span class="mr-2 mt-0.5">📶</span>
-                            <div>
-                                <strong class="block">網路通訊 (eSIM)</strong>
-                                <span class="opacity-90">建議買 <a href="https://saily.com/" target="_blank" class="underline hover:text-indigo-900">Saily</a> 日本 5GB/7日 (約 $10-15 USD)。</span>
-                            </div>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="mr-2 mt-0.5">💴</span>
-                            <div>
-                                <strong class="block">現金儲備</strong>
-                                <span class="opacity-90">準備 40,000 - 60,000 日圓，主攻黑門市場、寺廟與老店。</span>
-                            </div>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="mr-2 mt-0.5">🏨</span>
-                            <div>
-                                <strong class="block">飯店 Late Check-in</strong>
-                                <span class="opacity-90">去程預計 23:30 抵達，務必事先透過訂房網傳送延遲入住訊息。</span>
-                            </div>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="mr-2 mt-0.5">⚖️</span>
-                            <div>
-                                <strong class="block text-red-700">行李加購 (極重要)</strong>
-                                <span class="opacity-90 font-medium">確認回程虎航<span class="underline">含至少 20kg 託運</span> (清酒與菜刀必備)。</span>
-                            </div>
-                        </li>
-                    </ul>
-                </section>
-
                 <!-- Section 2: Critical Alerts -->
                 <section class="bg-red-50 p-5 md:p-6 rounded-2xl shadow-sm border border-red-100 relative overflow-hidden">
                     <div class="absolute -right-4 -top-4 text-6xl opacity-10">🚨</div>
-                    <h2 class="text-lg font-bold text-red-800 mb-3 flex items-center relative z-10">
+                    <h2 class="text-lg font-bold text-red-800 mb-4 flex items-center relative z-10">
                         <span class="mr-2">🚨</span> 最高警戒事項
                     </h2>
-                    <ul class="space-y-3 text-sm text-red-900 relative z-10">
+                    <ul class="space-y-4 text-sm text-red-900 relative z-10">
                         <li class="flex items-start">
                             <span class="mr-3 text-lg leading-none">❌</span>
                             <div>
                                 <strong class="block font-bold">551 蓬萊肉包禁令</strong>
-                                <span class="text-red-700">含豬肉，<a href="https://www.google.com/maps/search/?api=1&query=551%E8%93%AC%E8%90%8A" target="_blank" class="underline hover:text-red-900 font-bold">絕對禁止帶回台灣</a>！務必於日本境內吃完。</span>
+                                <span class="text-red-700">含豬肉，<a href="https://www.google.com/maps/search/?api=1&query=551%E8%93%AC%E8%90%8A" target="_blank" class="underline hover:text-red-900">絕對禁止帶回台灣</a>！查獲重罰 20 萬，務必於日本境內吃完。</span>
                             </div>
                         </li>
                         <li class="flex items-start">
                             <span class="mr-3 text-lg leading-none">📦</span>
                             <div>
                                 <strong class="block font-bold">液體託運規則</strong>
-                                <span class="text-red-700">所有超過 100ml 的清酒玻璃瓶 <span class="underline font-bold">必須託運</span>。</span>
+                                <span class="text-red-700">所有超過 100ml 的清酒玻璃瓶 <span class="underline font-bold">必須託運</span>。請善用衣物與襪子防撞。</span>
                             </div>
                         </li>
                     </ul>
@@ -191,16 +166,16 @@
 
             </div>
 
-            <!-- COLUMN 2: Itinerary & Shopping Intel -->
+            <!-- COLUMN 2: Itinerary & Shopping Intel (Spans 8 cols on Desktop) -->
             <div class="lg:col-span-8 flex flex-col gap-6">
                 
-                <!-- Section 3: Detailed Interactive Itinerary -->
+                <!-- Section 3: Interactive Itinerary -->
                 <section class="bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-stone-100">
                     <div class="mb-5">
                         <h2 class="text-xl font-bold flex items-center text-stone-800">
-                            <span class="text-2xl mr-2">🗺️</span> 戰略時間軸 (精細詳解版)
+                            <span class="text-2xl mr-2">🗺️</span> 戰略時間軸
                         </h2>
-                        <p class="text-xs text-stone-400 mt-1">包含各站點建議停留時間與備案美食。</p>
+                        <p class="text-xs text-stone-400 mt-1">點擊下方日期切換行程。附有 <span class="text-pink-600 font-bold">📸 必拍視角</span> 提示與 <a href="#" class="text-blue-500 underline pointer-events-none">地圖導航</a>。</p>
                     </div>
 
                     <!-- Navigation Tabs -->
@@ -220,7 +195,7 @@
                     </div>
 
                     <!-- Timeline Content Container -->
-                    <div class="min-h-[400px]">
+                    <div class="min-h-[320px]">
                         
                         <!-- Day 1 -->
                         <div id="day1" class="timeline-content active fade-in">
@@ -228,27 +203,21 @@
                             <div class="relative border-l-2 border-stone-200 ml-3 space-y-7 pb-4">
                                 <div class="pl-6 relative">
                                     <div class="absolute w-4 h-4 bg-blue-500 rounded-full -left-[9px] top-1 border-2 border-white"></div>
-                                    <span class="text-xs font-bold text-blue-500 tracking-wider">15:30 - 22:00</span>
-                                    <h4 class="font-bold text-stone-800 mt-1 text-base">移動與飛行 ➔ <a href="https://www.google.com/maps/search/?api=1&query=%E9%97%9C%E8%A5%BF%E5%9C%8B%E9%9A%9B%E6%A9%9F%E5%A0%B4" target="_blank" class="text-blue-600 hover:text-blue-800 transition-colors underline">關西機場 (KIX)</a></h4>
-                                    <p class="text-sm text-stone-500 mt-1">捷星航空 (GK054) 18:20 桃園起飛。預計 22:00 降落通關。</p>
-                                    <span class="inline-block mt-2 text-xs bg-stone-100 px-2 py-1 rounded text-stone-500">⏳ 飛行時間：3 小時 40 分</span>
+                                    <span class="text-xs font-bold text-blue-500 tracking-wider">18:20 飛 ➔ 22:00 降落</span>
+                                    <h4 class="font-bold text-stone-800 mt-1 text-base">捷星航空前往 <a href="https://www.google.com/maps/search/?api=1&query=%E9%97%9C%E8%A5%BF%E5%9C%8B%E9%9A%9B%E6%A9%9F%E5%A0%B4" target="_blank" class="text-blue-600 hover:underline">關西 (KIX)</a></h4>
                                 </div>
                                 <div class="pl-6 relative">
                                     <div class="absolute w-4 h-4 bg-stone-400 rounded-full -left-[9px] top-1 border-2 border-white"></div>
                                     <span class="text-xs font-bold text-stone-400 tracking-wider">23:30</span>
-                                    <h4 class="font-bold text-stone-800 mt-1 text-base">入住 <a href="https://maps.app.goo.gl/oqakMSPYP7h9EJsR9" target="_blank" class="text-blue-600 hover:text-blue-800 transition-colors underline">Red Roof Plus Namba</a></h4>
-                                    <p class="text-sm text-stone-500 mt-1">迅速辦理 Check-in，放下行李稍作休息。</p>
-                                    <span class="inline-block mt-2 text-xs bg-stone-100 px-2 py-1 rounded text-stone-500">⏳ 辦理入住：15 分鐘</span>
+                                    <h4 class="font-bold text-stone-800 mt-1 text-base">入住 <a href="https://www.google.com/maps/search/?api=1&query=Red+Roof+Plus+Osaka+Namba" target="_blank" class="text-blue-600 hover:underline">Red Roof Plus Namba</a></h4>
+                                    <p class="text-sm text-stone-500 mt-1">務必事先透過訂房網通知飯店 Late Check-in。</p>
                                 </div>
                                 <div class="pl-6 relative">
                                     <div class="absolute w-4 h-4 bg-pink-500 rounded-full -left-[9px] top-1 border-2 border-white"></div>
-                                    <span class="text-xs font-bold text-pink-500 tracking-wider">深夜</span>
-                                    <h4 class="font-bold text-stone-800 mt-1 text-base">潛入 <a href="https://www.google.com/maps/search/?api=1&query=%E9%81%93%E9%A0%93%E5%A0%80" target="_blank" class="text-blue-600 hover:text-blue-800 transition-colors underline">道頓堀</a> 散步 & <a href="https://www.google.com/maps/search/?api=1&query=%E5%94%90%E5%90%89%E8%A8%B6%E5%BE%B7+%E9%81%93%E9%A0%93%E5%A0%80%E5%BA%97" target="_blank" class="text-blue-600 hover:text-blue-800 transition-colors underline">唐吉訶德</a> 採買</h4>
-                                    <p class="text-sm text-stone-600 mt-1">步行前往道頓堀感受大阪夜生活，並在唐吉訶德採買隔日早餐與宵夜零食 (第一晚建議不飲酒以保持戰力)。</p>
-                                    <span class="inline-block mt-2 text-xs bg-stone-100 px-2 py-1 rounded text-stone-500 mb-2">⏳ 建議停留：1 小時</span>
-                                    <div class="bg-pink-50 rounded-lg p-3 text-sm border border-pink-100 text-pink-800">
-                                        <strong class="font-bold">📸 必拍視角：</strong> 避開橋上人潮，走到橋下「道頓堀川步道」，由下往上仰拍固力果跑跑人，能拍出極具魄力的乾淨畫面！<br>
-                                        <span class="text-xs opacity-75 mt-1 block">*(戰略提示：發第一則限動，保持低調神祕感紀錄獨旅開局)*</span>
+                                    <span class="text-xs font-bold text-pink-500 tracking-wider">深夜任務</span>
+                                    <h4 class="font-bold text-stone-800 mt-1 text-base"><a href="https://www.google.com/maps/search/?api=1&query=%E9%81%93%E9%A0%93%E5%A0%80" target="_blank" class="text-blue-600 hover:underline">道頓堀</a> 散步 & <a href="https://www.google.com/maps/search/?api=1&query=%E5%94%90%E5%90%89%E8%A8%B6%E5%BE%B7+%E9%81%93%E9%A0%93%E5%A0%80%E5%BA%97" target="_blank" class="text-blue-600 hover:underline">唐吉訶德</a> 微醺</h4>
+                                    <div class="bg-pink-50 rounded-lg p-3 mt-2 text-sm border border-pink-100 text-pink-800">
+                                        <strong class="font-bold">📸 必拍視角：</strong> 走到橋下「道頓堀川步道」，由下往上仰拍跑跑人，避開人潮。<br>
                                     </div>
                                 </div>
                             </div>
@@ -261,43 +230,27 @@
                                 <div class="pl-6 relative">
                                     <div class="absolute w-4 h-4 bg-stone-400 rounded-full -left-[9px] top-1 border-2 border-white"></div>
                                     <span class="text-xs font-bold text-stone-400 tracking-wider">08:00 - 09:30</span>
-                                    <h4 class="font-bold text-stone-800 mt-1">晨間醒腦：<a href="https://www.google.com/maps/search/?api=1&query=%E6%9D%BE%E5%B1%8B+%E9%9B%A3%E6%B3%A2" target="_blank" class="text-blue-600 hover:text-blue-800 transition-colors underline">松屋</a> 或 <a href="https://www.google.com/maps/search/?api=1&query=Doutor+%E9%9B%A3%E6%B3%A2" target="_blank" class="text-blue-600 hover:text-blue-800 transition-colors underline">Doutor</a> ➔ <a href="https://www.google.com/maps/search/?api=1&query=%E9%9B%A3%E6%B3%A2%E5%85%AB%E9%98%AA%E7%A5%9E%E7%A4%BE" target="_blank" class="text-blue-600 hover:text-blue-800 transition-colors underline">難波八阪神社</a></h4>
-                                    <p class="text-sm text-stone-600 mt-1">享用日式烤鮭魚定食或咖啡輕食後，散步至神社參拜，祈求事業與除厄。</p>
-                                    <span class="inline-block mt-2 text-xs bg-stone-100 px-2 py-1 rounded text-stone-500 mb-2">⏳ 建議停留：1 小時 15 分</span>
-                                    <p class="text-xs text-pink-600 font-bold">📸 攝影建議：站在巨大獅子頭正前方稍微偏低的角度仰拍，讓銳利的牙齒充滿畫面，視覺張力最強！</p>
+                                    <h4 class="font-bold text-stone-800 mt-1"><a href="https://www.google.com/maps/search/?api=1&query=%E6%9D%BE%E5%B1%8B+%E9%9B%A3%E6%B3%A2" target="_blank" class="text-blue-600 hover:underline">松屋</a> 早餐 ➔ <a href="https://www.google.com/maps/search/?api=1&query=%E9%9B%A3%E6%B3%A2%E5%85%AB%E9%98%AA%E7%A5%9E%E7%A4%BE" target="_blank" class="text-blue-600 hover:underline">難波八阪神社</a></h4>
+                                    <p class="text-xs text-pink-600 font-bold mt-1">📸 獅子頭正前方稍微偏低仰拍，張力最強。</p>
                                 </div>
                                 <div class="pl-6 relative">
                                     <div class="absolute w-4 h-4 bg-orange-500 rounded-full -left-[9px] top-1 border-2 border-white"></div>
                                     <span class="text-xs font-bold text-orange-500 tracking-wider">10:00 - 12:45</span>
-                                    <h4 class="font-bold text-stone-800 mt-1">一級戰區：<a href="https://www.google.com/maps/search/?api=1&query=Joshin+Super+Kids+Land+HQ+Osaka" target="_blank" class="text-blue-600 hover:text-blue-800 transition-colors underline">Joshin 玩具</a> ➔ <a href="https://www.google.com/maps/search/?api=1&query=%E5%8D%83%E6%97%A5%E5%89%8D%E9%81%93%E5%85%B7%E5%B1%8B%E7%AD%8B%E5%95%86%E5%BA%97%E8%A1%97" target="_blank" class="text-blue-600 hover:text-blue-800 transition-colors underline">道具屋筋</a> ➔ <a href="https://www.google.com/maps/search/?api=1&query=%E9%9B%A3%E6%B3%A2%E9%AB%98%E5%B3%B6%E5%B1%8B" target="_blank" class="text-blue-600 hover:text-blue-800 transition-colors underline">高島屋</a></h4>
-                                    <ul class="text-sm text-stone-600 mt-1 list-disc pl-4 space-y-1">
-                                        <li>執行「20 盒陀螺精兵戰術」，鎖定 UX-03 與 CX 系列。</li>
-                                        <li>前往「一文字廚器」挑選職人三德刀並等候刻名。順便尋寶手工錫杯。</li>
-                                        <li>高島屋 B1 啟動「迷你酒尋寶」，先挑 3-5 瓶 180ml 的盲測大軍。</li>
-                                        <li><strong class="text-stone-800">戰術動作：</strong>買完先走回附近的飯店丟包戰利品，一身輕裝去吃飯！</li>
-                                    </ul>
-                                    <span class="inline-block mt-2 text-xs bg-stone-100 px-2 py-1 rounded text-stone-500 mb-2">⏳ 總建議停留與緩衝：2 小時 45 分</span>
-                                    <p class="text-xs text-pink-600 font-bold">📸 攝影建議：結帳後單手拿著疊起來的陀螺戰利品，背景帶到 Joshin 的免稅櫃台或巨型模型。</p>
+                                    <h4 class="font-bold text-stone-800 mt-1"><a href="https://www.google.com/maps/search/?api=1&query=Joshin+Super+Kids+Land+HQ+Osaka" target="_blank" class="text-blue-600 hover:underline">Joshin 玩具</a> ➔ <a href="https://www.google.com/maps/search/?api=1&query=%E5%8D%83%E6%97%A5%E5%89%8D%E9%81%93%E5%85%B7%E5%B1%8B%E7%AD%8B%E5%95%86%E5%BA%97%E8%A1%97" target="_blank" class="text-blue-600 hover:underline">道具屋筋</a> ➔ <a href="https://www.google.com/maps/search/?api=1&query=%E9%9B%A3%E6%B3%A2%E9%AB%98%E5%B3%B6%E5%B1%8B" target="_blank" class="text-blue-600 hover:underline">高島屋</a></h4>
+                                    <p class="text-sm text-stone-600 mt-1">執行 20 盒陀螺精兵戰術、買菜刀刻名、高島屋買 180ml 迷你清酒。買完回飯店丟包。</p>
                                 </div>
                                 <div class="pl-6 relative">
                                     <div class="absolute w-4 h-4 bg-emerald-500 rounded-full -left-[9px] top-1 border-2 border-white"></div>
                                     <span class="text-xs font-bold text-emerald-500 tracking-wider">13:15 - 18:30</span>
-                                    <h4 class="font-bold text-stone-800 mt-1">海鮮大餐：<a href="https://www.google.com/maps/search/?api=1&query=%E9%BB%91%E9%96%80%E5%B8%82%E5%A0%B4" target="_blank" class="text-blue-600 hover:text-blue-800 transition-colors underline">黑門市場</a> ➔ 無極限血拼：<a href="https://www.google.com/maps/search/?api=1&query=%E7%BE%8E%E5%9C%8B%E6%9D%91+%E5%A4%A7%E9%98%AA" target="_blank" class="text-blue-600 hover:text-blue-800 transition-colors underline">美國村</a> / <a href="https://www.google.com/maps/search/?api=1&query=Orange+Street+Osaka" target="_blank" class="text-blue-600 hover:text-blue-800 transition-colors underline">堀江</a></h4>
-                                    <ul class="text-sm text-stone-600 mt-1 list-disc pl-4 space-y-1">
-                                        <li><strong>午餐備案：</strong>「鮪魚屋 黑銀」厚切大腹、「丸善食肉店」現烤和牛串，飯後找間水果攤買草莓大福。</li>
-                                        <li><strong>服飾採購：</strong>沿著御堂筋往北走，美式街頭逛美國村 (WEGO)；日系質感直攻堀江 (URBAN RESEARCH, BEAMS) 買素T與工作褲。</li>
-                                    </ul>
-                                    <span class="inline-block mt-2 text-xs bg-stone-100 px-2 py-1 rounded text-stone-500 mb-2">⏳ 總建議停留：5 小時 15 分</span>
-                                    <p class="text-xs text-pink-600 font-bold">📸 攝影建議：開啟手機人像模式，手舉厚切黑鮪魚，利用背景市場的提燈與人群作為模糊散景。</p>
+                                    <h4 class="font-bold text-stone-800 mt-1"><a href="https://www.google.com/maps/search/?api=1&query=%E9%BB%91%E9%96%80%E5%B8%82%E5%A0%B4" target="_blank" class="text-blue-600 hover:underline">黑門市場</a> ➔ <a href="https://www.google.com/maps/search/?api=1&query=%E7%BE%8E%E5%9C%8B%E6%9D%91+%E5%A4%A7%E9%98%AA" target="_blank" class="text-blue-600 hover:underline">美國村</a>/<a href="https://www.google.com/maps/search/?api=1&query=Orange+Street+Osaka" target="_blank" class="text-blue-600 hover:underline">堀江</a> 買衣服</h4>
+                                    <p class="text-sm text-stone-600 mt-1">黑鮪魚大腹午餐。下午選購日系潮牌 (URBAN RESEARCH, BEAMS) 素T與工作褲。</p>
                                 </div>
                                 <div class="pl-6 relative">
                                     <div class="absolute w-4 h-4 bg-blue-500 rounded-full -left-[9px] top-1 border-2 border-white"></div>
                                     <span class="text-xs font-bold text-blue-500 tracking-wider">19:00</span>
-                                    <h4 class="font-bold text-stone-800 mt-1">微醺晚餐：<a href="https://www.google.com/maps/search/?api=1&query=%E9%B3%A5%E8%B2%B4%E6%97%8F+%E9%9B%A3%E6%B3%A2" target="_blank" class="text-blue-600 hover:text-blue-800 transition-colors underline">鳥貴族</a> 或 <a href="https://www.google.com/maps/search/?api=1&query=%E5%9C%8B%E7%94%A2%E7%89%9B%E7%87%92%E8%82%89%E5%90%83%E5%88%B0%E9%A3%BD+%E9%9B%A3%E6%B3%A2" target="_blank" class="text-blue-600 hover:text-blue-800 transition-colors underline">國產牛燒肉(あぶりや)</a></h4>
-                                    <p class="text-sm text-stone-600 mt-1">卸下整天的疲憊，大口吃肉喝酒。飯後可散步至法善寺橫丁看「水掛不動明王」。</p>
-                                    <span class="inline-block mt-2 text-xs bg-stone-100 px-2 py-1 rounded text-stone-500 mb-2">⏳ 建議停留：1.5 - 2 小時</span>
-                                    <div class="bg-blue-50 rounded-lg p-3 text-sm border border-blue-100 text-blue-800">
-                                        <strong class="font-bold">📸 攝影紀錄：</strong> 舉起「巨無霸 (Mega) 生啤酒」與滿桌的烤肉串，拍一張充滿臨場感的主觀視角照。
+                                    <h4 class="font-bold text-stone-800 mt-1"><a href="https://www.google.com/maps/search/?api=1&query=%E9%B3%A5%E8%B2%B4%E6%97%8F+%E9%9B%A3%E6%B3%A2" target="_blank" class="text-blue-600 hover:underline">鳥貴族</a> 串燒晚餐</h4>
+                                    <div class="bg-blue-50 rounded-lg p-3 mt-2 text-sm border border-blue-100 text-blue-800">
+                                        <strong class="font-bold">📸 核心任務：</strong> 舉起 Mega 生啤酒與滿桌烤肉串拍照。<br>
                                     </div>
                                 </div>
                             </div>
@@ -310,34 +263,26 @@
                                 <div class="pl-6 relative">
                                     <div class="absolute w-4 h-4 bg-stone-400 rounded-full -left-[9px] top-1 border-2 border-white"></div>
                                     <span class="text-xs font-bold text-stone-400 tracking-wider">08:15 - 12:00</span>
-                                    <h4 class="font-bold text-stone-800 mt-1">晨間醒腦 ➔ 千本鳥居：<a href="https://www.google.com/maps/search/?api=1&query=%E4%BC%8F%E8%A6%8B%E7%A8%BB%E8%8D%B7%E5%A4%A7%E7%A4%BE" target="_blank" class="text-blue-600 hover:text-blue-800 transition-colors underline">伏見稻荷大社</a></h4>
-                                    <p class="text-sm text-stone-600 mt-1">搭乘京阪電車前往京都。沿著稻荷山步道健行，吸收山林芬多精。</p>
-                                    <span class="inline-block mt-2 text-xs bg-stone-100 px-2 py-1 rounded text-stone-500 mb-2">⏳ 建議停留：1.5 - 2 小時</span>
-                                    <p class="text-xs text-pink-600 font-bold">📸 攝影建議：避開入口人潮，走到中後段「奧社」附近，利用「三分之一構圖」拍出無人鳥居的深邃延伸感。</p>
+                                    <h4 class="font-bold text-stone-800 mt-1"><a href="https://www.google.com/maps/search/?api=1&query=Komedas+Coffee+%E9%9B%A3%E6%B3%A2" target="_blank" class="text-blue-600 hover:underline">客美多咖啡</a> ➔ <a href="https://www.google.com/maps/search/?api=1&query=%E4%BC%8F%E8%A6%8B%E7%A8%BB%E8%8D%B7%E5%A4%A7%E7%A4%BE" target="_blank" class="text-blue-600 hover:underline">伏見稻荷大社</a></h4>
+                                    <p class="text-xs text-pink-600 font-bold mt-1">📸 走到中後段「奧社」利用三分之一構圖拍無人鳥居。</p>
                                 </div>
                                 <div class="pl-6 relative">
                                     <div class="absolute w-4 h-4 bg-green-500 rounded-full -left-[9px] top-1 border-2 border-white"></div>
                                     <span class="text-xs font-bold text-green-500 tracking-wider">12:00 - 16:30</span>
-                                    <h4 class="font-bold text-stone-800 mt-1">抹茶午餐：<a href="https://www.google.com/maps/search/?api=1&query=%E4%B8%AD%E6%9D%91%E8%97%A4%E5%90%89%E6%9C%AC%E5%BA%97+%E5%AE%87%E6%B2%BB" target="_blank" class="text-blue-600 hover:text-blue-800 transition-colors underline">中村藤吉</a> ➔ 花海攝影：<a href="https://www.google.com/maps/search/?api=1&query=%E4%B8%89%E5%AE%A4%E6%88%B6%E5%AF%BA" target="_blank" class="text-blue-600 hover:text-blue-800 transition-colors underline">三室戶寺</a></h4>
-                                    <ul class="text-sm text-stone-600 mt-1 list-disc pl-4 space-y-1">
-                                        <li><strong>午餐備案：</strong>中村藤吉的抹茶蕎麥麵與竹筒聖代；若排隊太長可改去歷史悠久的「宇治駿河屋」。</li>
-                                        <li>前往三室戶寺，沉浸在初夏限定的兩萬株紫陽花海中。</li>
-                                    </ul>
-                                    <span class="inline-block mt-2 text-xs bg-stone-100 px-2 py-1 rounded text-stone-500 mb-2">⏳ 總建議停留：3 小時</span>
-                                    <p class="text-xs text-pink-600 font-bold">📸 攝影任務：蹲低視角，在萬千花海中尋找稀有的「愛心型紫陽花」，拍下來紀錄好運時刻。</p>
+                                    <h4 class="font-bold text-stone-800 mt-1"><a href="https://www.google.com/maps/search/?api=1&query=%E4%B8%AD%E6%9D%91%E8%97%A4%E5%90%89%E6%9C%AC%E5%BA%97+%E5%AE%87%E6%B2%BB" target="_blank" class="text-blue-600 hover:underline">中村藤吉本店</a> ➔ <a href="https://www.google.com/maps/search/?api=1&query=%E4%B8%89%E5%AE%A4%E6%88%B6%E5%AF%BA" target="_blank" class="text-blue-600 hover:underline">三室戶寺</a></h4>
+                                    <p class="text-sm text-stone-600 mt-1">宇治吃抹茶聖代。隨後前往三室戶寺拍初夏限定紫陽花海。</p>
+                                    <p class="text-xs text-pink-600 font-bold mt-1">📸 浪漫任務：尋找「愛心型紫陽花」。</p>
                                 </div>
                                 <div class="pl-6 relative">
                                     <div class="absolute w-4 h-4 bg-blue-500 rounded-full -left-[9px] top-1 border-2 border-white"></div>
                                     <span class="text-xs font-bold text-blue-500 tracking-wider">17:30 - 20:00</span>
-                                    <h4 class="font-bold text-stone-800 mt-1">黃昏放空：<a href="https://www.google.com/maps/search/?api=1&query=%E9%B4%A8%E5%B7%9D%E4%B8%89%E8%A7%92%E6%B4%B2" target="_blank" class="text-blue-600 hover:text-blue-800 transition-colors underline">鴨川跳烏龜</a> ➔ 納涼床晚餐</h4>
-                                    <p class="text-sm text-stone-600 mt-1">傍晚在鴨川三角洲享受微風。晚餐推薦四條河原町的 <a href="https://www.google.com/maps/search/?api=1&query=%E5%90%8D%E4%BB%A3%E8%B1%AC%E6%8E%92+%E5%9B%9B%E6%A2%9D%E6%B2%B3%E5%8E%9F%E7%94%BA" target="_blank" class="text-blue-600 hover:underline">名代豬排 (Katsukura)</a> 或 <a href="https://www.google.com/maps/search/?api=1&query=%E9%BA%B5%E5%8C%A0%E6%9F%B3" target="_blank" class="text-blue-600 hover:underline">麵匠 柳 (清爽柚子拉麵)</a>。</p>
-                                    <span class="inline-block mt-2 text-xs bg-stone-100 px-2 py-1 rounded text-stone-500">⏳ 建議停留：2.5 小時</span>
+                                    <h4 class="font-bold text-stone-800 mt-1"><a href="https://www.google.com/maps/search/?api=1&query=%E9%B4%A8%E5%B7%9D%E4%B8%89%E8%A7%92%E6%B4%B2" target="_blank" class="text-blue-600 hover:underline">鴨川跳烏龜</a> ➔ 納涼床晚餐</h4>
+                                    <p class="text-sm text-stone-600 mt-1">黃昏鴨川放空拍照。晚餐推薦四條河原町 <a href="https://www.google.com/maps/search/?api=1&query=%E5%90%8D%E4%BB%A3%E8%B1%AC%E6%8E%92+%E5%9B%9B%E6%A2%9D%E6%B2%B3%E5%8E%9F%E7%94%BA" target="_blank" class="text-blue-600 hover:underline">名代豬排</a>。</p>
                                 </div>
                                 <div class="pl-6 relative">
                                     <div class="absolute w-4 h-4 bg-indigo-500 rounded-full -left-[9px] top-1 border-2 border-white"></div>
                                     <span class="text-xs font-bold text-indigo-500 tracking-wider">深夜</span>
-                                    <h4 class="font-bold text-stone-800 mt-1">隱藏任務：<a href="https://www.google.com/maps/search/?api=1&query=Namba+Parks" target="_blank" class="text-blue-600 hover:text-blue-800 transition-colors underline">難波公園 (Namba Parks)</a> 峽谷夜景</h4>
-                                    <p class="text-sm text-stone-600 mt-1">返回大阪後，若體力許可，從頂樓的空中花園步道往下拍，獨特的梯田峽谷建築在夜晚極具未來感。</p>
+                                    <h4 class="font-bold text-stone-800 mt-1"><a href="https://www.google.com/maps/search/?api=1&query=Namba+Parks" target="_blank" class="text-blue-600 hover:underline">難波公園 (Namba Parks)</a> 峽谷夜景</h4>
                                 </div>
                             </div>
                         </div>
@@ -349,37 +294,27 @@
                                 <div class="pl-6 relative">
                                     <div class="absolute w-4 h-4 bg-stone-400 rounded-full -left-[9px] top-1 border-2 border-white"></div>
                                     <span class="text-xs font-bold text-stone-400 tracking-wider">08:30 - 10:30</span>
-                                    <h4 class="font-bold text-stone-800 mt-1">老派晨之美：<a href="https://www.google.com/maps/search/?api=1&query=%E4%B8%B8%E7%A6%8F%E7%8F%88%E7%90%B2%E5%BA%97+%E5%8D%83%E6%97%A5%E5%89%8D%E6%9C%AC%E5%BA%97" target="_blank" class="text-blue-600 hover:text-blue-800 transition-colors underline">丸福珈琲店</a> ➔ 退房寄物</h4>
-                                    <p class="text-sm text-stone-600 mt-1">在充滿昭和風的真皮沙發上享受復古熱壓吐司。飯後辦理退房，將大行李免費寄放飯店櫃檯，空手前往梅田。</p>
-                                    <span class="inline-block mt-2 text-xs bg-stone-100 px-2 py-1 rounded text-stone-500 mb-2">⏳ 建議停留與緩衝：1.5 小時</span>
-                                    <p class="text-xs text-pink-600 font-bold">📸 攝影建議：拍下陶瓷咖啡杯與彩繪玻璃窗，營造老派男人的獨旅儀式感。</p>
+                                    <h4 class="font-bold text-stone-800 mt-1"><a href="https://www.google.com/maps/search/?api=1&query=%E4%B8%B8%E7%A6%8F%E7%8F%88%E7%90%B2%E5%BA%97+%E5%8D%83%E6%97%A5%E5%89%8D%E6%9C%AC%E5%BA%97" target="_blank" class="text-blue-600 hover:underline">丸福珈琲店</a> ➔ 退房寄物</h4>
+                                    <p class="text-sm text-stone-600 mt-1">享受復古熱壓吐司早餐。大行李免費放飯店，空手去梅田。</p>
                                 </div>
                                 <div class="pl-6 relative">
                                     <div class="absolute w-4 h-4 bg-orange-500 rounded-full -left-[9px] top-1 border-2 border-white"></div>
                                     <span class="text-xs font-bold text-orange-500 tracking-wider">10:30 - 14:30</span>
-                                    <h4 class="font-bold text-stone-800 mt-1">最後巡邏：<a href="https://www.google.com/maps/search/?api=1&query=Yodobashi+Umeda" target="_blank" class="text-blue-600 hover:text-blue-800 transition-colors underline">Yodobashi</a> ➔ 犒賞午餐 ➔ <a href="https://www.google.com/maps/search/?api=1&query=%E9%98%AA%E6%80%A5%E7%99%BE%E8%B2%A8%E6%A2%85%E7%94%B0%E6%9C%AC%E5%BA%97" target="_blank" class="text-blue-600 hover:text-blue-800 transition-colors underline">阪急買酒</a></h4>
-                                    <ul class="text-sm text-stone-600 mt-1 list-disc pl-4 space-y-1">
-                                        <li>直奔 Yodobashi 梅田店確認是否還有遺漏的陀螺型號。</li>
-                                        <li><strong>午餐備案：</strong><a href="https://www.google.com/maps/search/?api=1&query=%E5%88%A9%E4%B9%85%E7%89%9B%E8%88%8C+%E5%A4%A7%E4%B8%B8%E6%A2%85%E7%94%B0%E5%BA%97" target="_blank" class="text-blue-600 hover:underline">利久厚切牛舌</a> (大丸14F)、<a href="https://www.google.com/maps/search/?api=1&query=%E7%87%92%E8%82%89%E8%90%AC%E9%87%8E+LUCUA" target="_blank" class="text-blue-600 hover:underline">燒肉萬野</a> (LUCUA) 或 <a href="https://www.google.com/maps/search/?api=1&query=%E9%B0%BB%E9%AD%9A+%E9%AD%9A%E4%BC%8A+%E9%98%AA%E7%A5%9E%E6%A2%85%E7%94%B0" target="_blank" class="text-blue-600 hover:underline">鰻魚魚伊</a>。</li>
-                                        <li>飯後至阪急百貨 B2 補齊免稅額內的迷你清酒與茅乃舍高湯包。</li>
-                                    </ul>
-                                    <span class="inline-block mt-2 text-xs bg-stone-100 px-2 py-1 rounded text-stone-500">⏳ 總建議停留：4 小時</span>
+                                    <h4 class="font-bold text-stone-800 mt-1"><a href="https://www.google.com/maps/search/?api=1&query=Yodobashi+Umeda" target="_blank" class="text-blue-600 hover:underline">Yodobashi</a> ➔ <a href="https://www.google.com/maps/search/?api=1&query=%E5%88%A9%E4%B9%85%E7%89%9B%E8%88%8C+%E5%A4%A7%E4%B8%B8%E6%A2%85%E7%94%B0%E5%BA%97" target="_blank" class="text-blue-600 hover:underline">利久牛舌</a> ➔ <a href="https://www.google.com/maps/search/?api=1&query=%E9%98%AA%E6%80%A5%E7%99%BE%E8%B2%A8%E6%A2%85%E7%94%B0%E6%9C%AC%E5%BA%97" target="_blank" class="text-blue-600 hover:underline">阪急買酒</a></h4>
+                                    <p class="text-sm text-stone-600 mt-1">最後巡視陀螺、吃厚切牛舌。在阪急 B2 補齊免稅額內的迷你清酒。</p>
                                 </div>
                                 <div class="pl-6 relative">
                                     <div class="absolute w-4 h-4 bg-emerald-500 rounded-full -left-[9px] top-1 border-2 border-white"></div>
                                     <span class="text-xs font-bold text-emerald-500 tracking-wider">15:00 - 16:15</span>
                                     <h4 class="font-bold text-stone-800 mt-1">難波閃電戰 ➔ 飯店優雅裝箱</h4>
-                                    <p class="text-sm text-stone-600 mt-1">返回難波買<a href="https://www.google.com/maps/search/?api=1&query=%E8%80%81%E7%88%BA%E7%88%BA%E8%B5%B7%E5%8F%B8%E8%9B%8B%E7%B3%95+%E9%9B%A3%E6%B3%A2%E6%9C%AC%E5%BA%97" target="_blank" class="text-blue-600 hover:text-blue-800 transition-colors underline">老爺爺起司蛋糕</a> (常溫可手提)、買 <a href="https://www.google.com/maps/search/?api=1&query=551%E8%93%AC%E8%90%8A+%E9%9B%A3%E6%B3%A2%E6%9C%AC%E5%BA%97" target="_blank" class="text-blue-600 hover:text-blue-800 transition-colors underline">551 肉包</a> 現場吃掉。最後回飯店大廳，將剛買的玻璃酒瓶塞入衣物與襪子縫隙防撞，準備託運。</p>
-                                    <span class="inline-block mt-2 text-xs bg-stone-100 px-2 py-1 rounded text-stone-500 mb-2">⏳ 建議停留與打包：1 小時 15 分</span>
-                                    <p class="text-xs text-pink-600 font-bold">📸 攝影建議：老爺爺蛋糕排隊時，錄影店員「搖鈴並烙印 Logo」的那股療癒軟彈感！</p>
+                                    <p class="text-sm text-stone-600 mt-1">買<a href="https://www.google.com/maps/search/?api=1&query=%E8%80%81%E7%88%BA%E7%88%BA%E8%B5%B7%E5%8F%B8%E8%9B%8B%E7%B3%95+%E9%9B%A3%E6%B3%A2%E6%9C%AC%E5%BA%97" target="_blank" class="text-blue-600 hover:underline">老爺爺起司蛋糕</a>(手提)、吃掉 <a href="https://www.google.com/maps/search/?api=1&query=551%E8%93%AC%E8%90%8A+%E9%9B%A3%E6%B3%A2%E6%9C%AC%E5%BA%97" target="_blank" class="text-blue-600 hover:underline">551 肉包</a>。回飯店將玻璃酒瓶塞入衣物縫隙防撞託運。</p>
                                 </div>
                                 <div class="pl-6 relative">
                                     <div class="absolute w-4 h-4 bg-blue-500 rounded-full -left-[9px] top-1 border-2 border-white"></div>
                                     <span class="text-xs font-bold text-blue-500 tracking-wider">16:30 出發 ➔ 23:30 返家</span>
-                                    <h4 class="font-bold text-stone-800 mt-1"><a href="https://www.google.com/maps/search/?api=1&query=%E5%8D%97%E6%B5%B7%E9%9B%A3%E6%B3%A2%E7%AB%99" target="_blank" class="text-blue-600 hover:text-blue-800 transition-colors underline">南海電鐵 Rapi:t</a> ➔ 抵達台灣</h4>
-                                    <p class="text-sm text-stone-600 mt-1">步行至車站搭乘特急列車 (約40分) 抵達關西機場。21:45 降落桃園轉乘機捷。</p>
-                                    <div class="bg-blue-50 rounded-lg p-3 mt-3 text-sm border border-blue-100 text-blue-800 font-medium">
-                                        🏡 任務完成！回家後把 Royce' 冰入冰箱，用錫杯倒一杯 180ml 夢幻地酒，犒賞自己的極致獨旅！
+                                    <h4 class="font-bold text-stone-800 mt-1"><a href="https://www.google.com/maps/search/?api=1&query=%E5%8D%97%E6%B5%B7%E9%9B%A3%E6%B3%A2%E7%AB%99" target="_blank" class="text-blue-600 hover:underline">南海電鐵 Rapi:t</a> ➔ 抵達台灣</h4>
+                                    <div class="bg-blue-50 rounded-lg p-3 mt-2 text-sm border border-blue-100 text-blue-800 font-medium">
+                                        🏡 任務完成！冰好巧克力，用錫杯倒一杯 180ml 地酒慶祝！
                                     </div>
                                 </div>
                             </div>
@@ -393,53 +328,42 @@
                     <div class="mb-5 flex flex-col md:flex-row md:items-end justify-between">
                         <div>
                             <h2 class="text-xl font-bold flex items-center text-stone-800">
-                                <span class="text-2xl mr-2">🗂️</span> 採購與情報總庫
+                                <span class="text-2xl mr-2">🛍️</span> 採購與行情情報庫
                             </h2>
-                            <p class="text-xs text-stone-400 mt-1">現場速查表：包含價格行情、防雷指南、免稅戰術與機場最終撤退細節。</p>
+                            <p class="text-xs text-stone-400 mt-1">現場速查表：包含價格行情、防雷指南與免稅戰術。</p>
                         </div>
                     </div>
 
-                    <!-- Category Tabs (2-Row Grid Layout) -->
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-6 border-b border-stone-100 pb-4">
-                        <button class="shop-btn active bg-pink-100 text-pink-800 font-bold px-3 py-2 rounded-lg text-sm transition-colors" onclick="switchShop('shop-sake', this)">🍶 迷你清酒</button>
-                        <button class="shop-btn bg-stone-100 text-stone-600 font-medium px-3 py-2 rounded-lg text-sm transition-colors hover:bg-stone-200" onclick="switchShop('shop-toy', this)">⚔️ 陀螺掃貨</button>
-                        <button class="shop-btn bg-stone-100 text-stone-600 font-medium px-3 py-2 rounded-lg text-sm transition-colors hover:bg-stone-200" onclick="switchShop('shop-craft', this)">🔪 職人工藝</button>
-                        <button class="shop-btn bg-stone-100 text-stone-600 font-medium px-3 py-2 rounded-lg text-sm transition-colors hover:bg-stone-200" onclick="switchShop('shop-cloth', this)">👖 服飾潮牌</button>
-                        <button class="shop-btn bg-stone-100 text-stone-600 font-medium px-3 py-2 rounded-lg text-sm transition-colors hover:bg-stone-200" onclick="switchShop('shop-drug', this)">💊 必買藥妝</button>
-                        <button class="shop-btn bg-stone-100 text-stone-600 font-medium px-3 py-2 rounded-lg text-sm transition-colors hover:bg-stone-200" onclick="switchShop('shop-shrine', this)">⛩️ 神社參拜</button>
-                        <button class="shop-btn bg-stone-100 text-stone-600 font-medium px-3 py-2 rounded-lg text-sm transition-colors hover:bg-stone-200" onclick="switchShop('shop-donki', this)">🐧 唐吉訶德</button>
-                        <button class="shop-btn bg-stone-100 text-stone-600 font-medium px-3 py-2 rounded-lg text-sm transition-colors hover:bg-stone-200" onclick="switchShop('shop-airport', this)">✈️ 機場撤退</button>
+                    <!-- Category Tabs -->
+                    <div class="flex space-x-6 overflow-x-auto hide-scroll mb-6 border-b-2 border-stone-100">
+                        <button class="shop-btn active pb-2 text-stone-400 text-sm whitespace-nowrap transition-colors" onclick="switchShop('shop-sake', this)">🍶 迷你清酒</button>
+                        <button class="shop-btn pb-2 text-stone-400 font-medium text-sm whitespace-nowrap transition-colors" onclick="switchShop('shop-toy', this)">⚔️ 陀螺掃貨</button>
+                        <button class="shop-btn pb-2 text-stone-400 font-medium text-sm whitespace-nowrap transition-colors" onclick="switchShop('shop-cloth', this)">👖 服飾潮牌</button>
+                        <button class="shop-btn pb-2 text-stone-400 font-medium text-sm whitespace-nowrap transition-colors" onclick="switchShop('shop-donki', this)">🐧 唐吉訶德</button>
                     </div>
 
                     <!-- Tab Contents -->
-                    <div class="min-h-[260px]">
+                    <div class="min-h-[220px]">
                         
                         <!-- Sake -->
                         <div id="shop-sake" class="shop-content active fade-in">
                             <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-5 relative overflow-hidden">
                                 <div class="absolute top-0 right-0 bg-emerald-500 text-white text-xs font-bold px-2 py-1 rounded-bl-lg">1.5L 免稅解鎖</div>
-                                <h3 class="font-black text-emerald-800 text-lg mb-2">🎯 迷你清酒必找銘柄清單</h3>
+                                <h3 class="font-black text-emerald-800 text-lg mb-2">100-180ml 嘗鮮盲測大軍</h3>
                                 <p class="text-sm text-emerald-700 mb-4 pb-3 border-b border-emerald-200">
-                                    專攻 100ml~180ml 玻璃瓶 (One Cup/豆瓶)。塞滿 1.5L 額度帶回 8~15 種口味盲測！<br>
-                                    <span class="text-xs text-emerald-600 block mt-1">📍 尋寶點：<a href="https://www.google.com/maps/search/?api=1&query=%E9%9B%A3%E6%B3%A2%E9%AB%98%E5%B3%B6%E5%B1%8B" target="_blank" class="underline hover:text-emerald-900">難波高島屋 B1</a> / <a href="https://www.google.com/maps/search/?api=1&query=%E9%98%AA%E6%80%A5%E7%99%BE%E8%B2%A8%E6%A2%85%E7%94%B0%E6%9C%AC%E5%BA%97" target="_blank" class="underline hover:text-emerald-900">梅田阪急 B1</a></span>
+                                    放棄大瓶裝，專攻超迷你玻璃瓶。塞滿 1.5 公升免稅額，可帶回 8~15 種口味！<br>
+                                    <span class="text-xs text-emerald-600 block mt-1">📍 尋寶點：難波高島屋 B1 / 梅田阪急 B1</span>
                                 </p>
-                                
-                                <div class="space-y-3">
-                                    <div class="bg-white p-3 rounded-lg border border-emerald-100 shadow-sm">
-                                        <strong class="text-stone-900 block border-b border-stone-100 pb-1 mb-2">🌸【果香華麗系】安全牌 / 送禮自用</strong>
-                                        <p class="text-sm text-stone-600"><span class="font-bold text-stone-800">獺祭 (45 / 39)：</span> 極易買到 180ml 玻璃瓶，果香濃郁零失誤。<br><span class="font-bold text-stone-800">作 (Zaku) 穗乃智：</span> 帶有青蘋果香氣，名字討喜，鋼彈迷必收。</p>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="bg-white p-3 rounded-lg shadow-sm border border-emerald-100">
+                                        <strong class="block text-stone-800 mb-1">豆瓶 (Mame-bin) 100-130ml</strong>
+                                        <p class="text-xs text-stone-500 mb-2">極致小巧，可收集最多口味。</p>
+                                        <span class="text-sm font-bold text-emerald-600">¥250 - ¥450</span>
                                     </div>
-                                    <div class="bg-white p-3 rounded-lg border border-emerald-100 shadow-sm">
-                                        <strong class="text-stone-900 block border-b border-stone-100 pb-1 mb-2">🏯【大阪在地系】內行特產地酒</strong>
-                                        <p class="text-sm text-stone-600"><span class="font-bold text-stone-800">吳春 (本丸/特吟)：</span> 大阪池田夢幻地酒，百搭清爽，若有小瓶必抓。<br><span class="font-bold text-stone-800">秋鹿 (純米酒)：</span> 大阪能勢町產，無農藥栽培，米香扎實。</p>
-                                    </div>
-                                    <div class="bg-white p-3 rounded-lg border border-emerald-100 shadow-sm">
-                                        <strong class="text-stone-900 block border-b border-stone-100 pb-1 mb-2">🛒【超商/超市尋寶系】精美包裝</strong>
-                                        <p class="text-sm text-stone-600"><span class="font-bold text-stone-800">菊水 鋁罐生原酒：</span> 黃色小鋁罐，超好帶且不易破，口感鮮榨濃郁。<br><span class="font-bold text-stone-800">白鶴 翔雲純米大吟釀：</span> 常見的漂亮小玻璃瓶，適合湊數嘗鮮。</p>
-                                    </div>
-                                    <div class="bg-white p-3 rounded-lg border border-emerald-100 shadow-sm bg-gradient-to-r from-white to-amber-50">
-                                        <strong class="text-stone-900 block border-b border-stone-100 pb-1 mb-2">🌟【幻之神物】無視容量直接拿</strong>
-                                        <p class="text-sm text-stone-600"><span class="font-bold text-amber-700">新政 No.6 / 蓬萊泉「空」：</span> 這些極難找小瓶裝，若在百貨冷藏櫃看到原價品，請毫不猶豫直接結帳！</p>
+                                    <div class="bg-white p-3 rounded-lg shadow-sm border border-emerald-100">
+                                        <strong class="block text-stone-800 mb-1">一合瓶 (One Cup) 180ml</strong>
+                                        <p class="text-xs text-stone-500 mb-2">標準個人尺寸。目標：吳春、獺祭、作(Zaku)。</p>
+                                        <span class="text-sm font-bold text-emerald-600">¥300 - ¥600</span>
                                     </div>
                                 </div>
                             </div>
@@ -449,76 +373,25 @@
                         <div id="shop-toy" class="shop-content fade-in">
                             <div class="bg-blue-50 border border-blue-200 rounded-xl p-5 relative overflow-hidden">
                                 <div class="absolute top-0 right-0 bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded-bl-lg">20盒精兵戰術</div>
-                                <h3 class="font-black text-blue-800 text-lg mb-2">Beyblade X 掃貨指南 (詳細清單)</h3>
+                                <h3 class="font-black text-blue-800 text-lg mb-2">Beyblade X 掃貨指南</h3>
                                 <p class="text-sm text-blue-700 mb-4 pb-3 border-b border-blue-200">
-                                    剔除魔王 CX-16 後，完美落實「20盒精兵戰術」。完整名單已為你分類歸納！<br>
-                                    <span class="text-xs text-blue-600 block mt-1">📍 尋寶點：<a href="https://www.google.com/maps/search/?api=1&query=Joshin+Super+Kids+Land+HQ+Osaka" target="_blank" class="underline hover:text-blue-800">Joshin 玩具本店</a> / <a href="https://www.google.com/maps/search/?api=1&query=%E5%94%90%E5%90%89%E8%A8%B6%E5%BE%B7+%E5%8D%83%E6%97%A5%E5%89%8D%E5%BA%97" target="_blank" class="underline hover:text-blue-800">唐吉訶德</a> / <a href="https://www.google.com/maps/search/?api=1&query=Yodobashi+Umeda" target="_blank" class="underline hover:text-blue-800">Yodobashi</a></span>
+                                    撇除巨大盒裝(CX-16已剃除)，主攻單盒裝與入門組，完美填滿 29 吋行李箱半邊。<br>
+                                    <span class="text-xs text-blue-600 block mt-1">📍 尋寶點：Joshin 玩具本店 / 唐吉訶德 / Yodobashi</span>
                                 </p>
-                                
-                                <div class="space-y-3 text-sm text-stone-700">
-                                    <div class="bg-white p-3 rounded-lg border border-blue-100 shadow-sm">
-                                        <div class="flex justify-between items-start mb-1">
-                                            <strong class="text-stone-900 block">🏆 效率之王 (UX-03)</strong>
-                                            <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded font-bold whitespace-nowrap">目標 8-10 盒</span>
-                                        </div>
-                                        <p class="text-xs text-stone-500">魔導神杖。體積最小(獵豹級15cm)、利潤空間比最高，架上有全掃。</p>
-                                    </div>
-                                    
-                                    <div class="bg-white p-3 rounded-lg border border-blue-100 shadow-sm">
-                                        <div class="flex justify-between items-start mb-1">
-                                            <strong class="text-stone-900 block">🥈 新貨利差 (CX-02, 07, 11, 13)</strong>
-                                            <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded font-bold whitespace-nowrap">目標 6-8 盒</span>
-                                        </div>
-                                        <p class="text-xs text-stone-500">2026最新系列，台灣鋪貨有時間差。單盒小包裝，平鋪超好塞。</p>
-                                    </div>
-
-                                    <div class="bg-white p-3 rounded-lg border border-blue-100 shadow-sm">
-                                        <div class="flex justify-between items-start mb-1">
-                                            <strong class="text-stone-900 block">🥉 穩定幣值 (BX-23, UX-01, 02, 09, 11)</strong>
-                                            <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded font-bold whitespace-nowrap">各抓 1-2 盒</span>
-                                        </div>
-                                        <p class="text-xs text-stone-500">含發射器的入門組(Starter)，中型方盒，新手入坑必買，轉手最快。</p>
-                                    </div>
-
-                                    <div class="bg-white p-3 rounded-lg border border-blue-100 shadow-sm">
-                                        <div class="flex justify-between items-start mb-1">
-                                            <strong class="text-stone-900 block">⚠️ 填縫用 (UX-15, BX-35, 48, UX-16, 18)</strong>
-                                            <span class="bg-stone-100 text-stone-600 text-xs px-2 py-1 rounded font-bold whitespace-nowrap">零碎空間專用</span>
-                                        </div>
-                                        <p class="text-xs text-stone-500">盲盒利潤不穩。UX-15(黑豹級25cm)外盒薄，可立著塞行李側邊。</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Crafts -->
-                        <div id="shop-craft" class="shop-content fade-in">
-                            <div class="bg-orange-50 border border-orange-200 rounded-xl p-5">
-                                <h3 class="font-black text-orange-800 text-lg mb-2">職人靈魂：三德刀與錫杯</h3>
-                                <p class="text-sm text-orange-700 mb-4 pb-3 border-b border-orange-200">
-                                    專屬於大人的浪漫採購！請留意傳統老店的營業時間（通常 18:00 前打烊）。<br>
-                                    <span class="text-xs font-bold text-red-600 mt-1 block">⚠️ 警告：菜刀絕對不能手提上飛機，務必包妥放進「託運行李」！</span>
-                                </p>
-                                <div class="space-y-4">
-                                    <div class="bg-white p-4 rounded-lg shadow-sm border border-orange-100">
-                                        <strong class="block text-stone-900 text-base mb-1 flex items-center"><span class="mr-2">🔪</span>手工三德刀 (附刻名服務)</strong>
-                                        <p class="text-sm text-stone-600 mb-2">尋寶點：<a href="https://www.google.com/maps/search/?api=1&query=%E4%B8%80%E6%96%87%E5%AD%97%E5%BB%9A%E5%99%A8" target="_blank" class="text-blue-600 hover:text-blue-800 underline transition-colors">一文字廚器 (道具屋筋商店街)</a></p>
-                                        <p class="text-xs text-stone-500">日本職人手工鍛造，現場購買可免費要求刻上專屬名字，最具紀念價值的實用戰利品。</p>
-                                    </div>
-                                    <div class="bg-white p-4 rounded-lg shadow-sm border border-orange-100">
-                                        <strong class="block text-stone-900 text-base mb-2 flex items-center"><span class="mr-2">🍶</span>大人的純錫酒杯 (買 2 只)</strong>
-                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                                            <div class="bg-orange-50/50 p-3 rounded border border-orange-100">
-                                                <strong class="text-stone-800 block mb-1">【大阪浪華錫器】</strong>
-                                                <p class="text-xs text-stone-600">尋寶：道具屋筋商店街<br>價格：約 ¥5,000-8,000<br>特色：傳統職人敲擊槌目紋路。</p>
-                                            </div>
-                                            <div class="bg-orange-50/50 p-3 rounded border border-orange-100">
-                                                <strong class="text-stone-800 block mb-1">【能作 Nousaku】</strong>
-                                                <p class="text-xs text-stone-600">尋寶：<a href="https://www.google.com/maps/search/?api=1&query=%E9%98%AA%E6%80%A5%E7%99%BE%E8%B2%A8%E6%A2%85%E7%94%B0%E6%9C%AC%E5%BA%97" target="_blank" class="text-blue-600 hover:underline">梅田百貨專櫃</a><br>價格：約 ¥4,000-7,000<br>特色：富山名牌，現代流線設計。</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <ul class="space-y-3 text-sm text-stone-700">
+                                    <li class="flex justify-between items-center bg-white p-2.5 rounded-lg border border-blue-100 shadow-sm">
+                                        <div><strong class="text-stone-900 block">🏆 獲利王 (UX-03) 等單枚裝</strong><span class="text-xs text-stone-500">體積最小利潤高 (¥1,400-1,600)</span></div>
+                                        <span class="bg-blue-100 px-2 py-1 rounded text-blue-800 font-bold whitespace-nowrap">目標 8-10 盒</span>
+                                    </li>
+                                    <li class="flex justify-between items-center bg-white p-2.5 rounded-lg border border-blue-100 shadow-sm">
+                                        <div><strong class="text-stone-900 block">🥈 新貨 (CX 系列)</strong><span class="text-xs text-stone-500">最新款式利差佳</span></div>
+                                        <span class="bg-blue-100 px-2 py-1 rounded text-blue-800 font-bold whitespace-nowrap">目標 6-8 盒</span>
+                                    </li>
+                                    <li class="flex justify-between items-center bg-white p-2.5 rounded-lg border border-blue-100 shadow-sm">
+                                        <div><strong class="text-stone-900 block">📦 入門組 (含發射器)</strong><span class="text-xs text-stone-500">BX-23, UX-01 等 (¥2,000-2,500)</span></div>
+                                        <span class="bg-blue-100 px-2 py-1 rounded text-blue-800 font-bold whitespace-nowrap">目標 3-4 盒</span>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
 
@@ -531,199 +404,58 @@
                                 </p>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div class="bg-white p-4 rounded-lg shadow-sm border border-stone-200">
-                                        <strong class="block text-indigo-700 text-base mb-1"><a href="https://www.google.com/maps/search/?api=1&query=%E7%BE%8E%E5%9C%8B%E6%9D%91+%E5%A4%A7%E9%98%AA" target="_blank" class="hover:underline">美國村 (Americamura)</a></strong>
+                                        <strong class="block text-indigo-700 text-base mb-1">美國村 (Americamura)</strong>
                                         <p class="text-xs font-bold text-stone-800 mb-2">風格：年輕 / 街頭 / 古著挖寶</p>
                                         <ul class="text-sm text-stone-600 space-y-1 list-disc pl-4">
                                             <li><span class="font-medium text-stone-800">WEGO：</span>平價街頭風。不知道怎麼搭，直接買假人模特兒身上的整套！</li>
-                                            <li><span class="font-medium text-stone-800">KINJI：</span>超巨大古著店。找狀況好的二手百搭牛仔外套或寬褲。</li>
-                                        </ul>
-                                    </div>
-                                    <div class="bg-white p-4 rounded-lg shadow-sm border border-stone-200">
-                                        <strong class="block text-indigo-700 text-base mb-1"><a href="https://www.google.com/maps/search/?api=1&query=Orange+Street+Osaka" target="_blank" class="hover:underline">堀江潮牌街 (Orange St.)</a></strong>
-                                        <p class="text-xs font-bold text-stone-800 mb-2">風格：日系質感 / City Boy / 選物</p>
-                                        <ul class="text-sm text-stone-600 space-y-1 list-disc pl-4">
-                                            <li><span class="font-medium text-stone-800">URBAN RESEARCH / BEAMS：</span>日系剪裁對亞洲男生極度友善。</li>
-                                            <li><strong class="text-stone-800">懶人必殺技：</strong> 買高磅數的「素色素 T」與「大地色工作寬褲」，穿上去質感立刻提升。</li>
-                                        </ul>
-                                    </div>
-                                </div>
+                        <!-- Donki Strategy -->
+                        <div class="bg-white border border-stone-200 rounded-xl p-5 hover:shadow-md transition-shadow">
+                            <h3 class="font-black text-yellow-600 flex items-center mb-3 text-lg">
+                                <span class="mr-2">🐧</span> 唐吉訶德戰區
+                            </h3>
+                            <div class="space-y-2 text-sm text-stone-600">
+                                <p><strong class="text-stone-800">🎡 道頓堀店：</strong> 人多，純拍照。</p>
+                                <p><strong class="text-stone-800">🛒 千日前店：</strong> 離飯店最近(3分)，主戰場。</p>
+                                <p><strong class="text-stone-800">🏢 御堂筋店：</strong> 走道最寬，推車最舒服。</p>
                             </div>
                         </div>
 
-                        <!-- Drugstore -->
-                        <div id="shop-drug" class="shop-content fade-in">
-                            <div class="bg-rose-50 border border-rose-200 rounded-xl p-5">
-                                <h3 class="font-black text-rose-800 text-lg mb-2">藥妝補貨與孝親清單</h3>
-                                <p class="text-sm text-rose-700 mb-4 pb-3 border-b border-rose-200">
-                                    此區塊列出家人指定的常備藥品，請注意攜帶數量限制。<br>
-                                    <span class="text-xs text-rose-600 block mt-1">📍 戰略點：優先在 <a href="https://www.google.com/maps/search/?api=1&query=%E5%BF%83%E9%BD%8B%E6%A9%8B%E7%AD%8B%E5%95%86%E5%BA%97%E8%A1%97" target="_blank" class="underline hover:text-rose-900">心齋橋筋</a> 比價，或於唐吉訶德一次買齊退稅。</span>
-                                </p>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                                    <div class="bg-white p-3 rounded-lg border border-rose-100 shadow-sm flex flex-col justify-between">
-                                        <div>
-                                            <strong class="text-stone-900 block mb-1"><a href="https://www.seirogan.co.jp/seirogan/" target="_blank" class="hover:text-blue-600 transition-colors">日本喇叭牌正露丸 (400粒裝)</a></strong>
-                                            <p class="text-xs text-stone-500 mb-2">居家常備腸胃藥。</p>
-                                        </div>
-                                        <div class="flex justify-between items-end border-t border-rose-50 pt-2 mt-2">
-                                            <span class="text-xs font-bold text-stone-700 bg-rose-100 px-2 py-0.5 rounded">目標：2 入</span>
-                                            <span class="font-bold text-rose-600">¥1,800 - 2,200</span>
-                                        </div>
-                                    </div>
-                                    <div class="bg-white p-3 rounded-lg border border-rose-100 shadow-sm flex flex-col justify-between">
-                                        <div>
-                                            <strong class="text-stone-900 block mb-1"><a href="https://hc.kowa.co.jp/cabagin/" target="_blank" class="hover:text-blue-600 transition-colors">Cabagin 胃腸藥 (300錠)</a></strong>
-                                            <p class="text-xs text-stone-500 mb-2">修復胃黏膜必備。</p>
-                                        </div>
-                                        <div class="flex justify-between items-end border-t border-rose-50 pt-2 mt-2">
-                                            <span class="text-xs font-bold text-stone-700 bg-rose-100 px-2 py-0.5 rounded">目標：1 入</span>
-                                            <span class="font-bold text-rose-600">¥1,800 - 2,000</span>
-                                        </div>
-                                    </div>
-                                    <div class="bg-white p-3 rounded-lg border border-rose-100 shadow-sm flex flex-col justify-between">
-                                        <div>
-                                            <strong class="text-stone-900 block mb-1"><a href="https://brand.taisho.co.jp/asclon/" target="_blank" class="hover:text-blue-600 transition-colors">大正 ASCLON 止咳藥 (24包)</a></strong>
-                                            <p class="text-xs text-stone-500 mb-2">藍白包裝，針對氣喘/支氣管。</p>
-                                        </div>
-                                        <div class="flex justify-between items-end border-t border-rose-50 pt-2 mt-2">
-                                            <span class="text-xs font-bold text-stone-700 bg-rose-100 px-2 py-0.5 rounded">目標：1 入</span>
-                                            <span class="font-bold text-rose-600">¥1,400 - 1,800</span>
-                                        </div>
-                                    </div>
-                                    <div class="bg-white p-3 rounded-lg border border-rose-100 shadow-sm flex flex-col justify-between">
-                                        <div>
-                                            <strong class="text-stone-900 block mb-1"><a href="https://www.rohto.com.tw/lycee.html" target="_blank" class="hover:text-blue-600 transition-colors">樂敦妮婕眼藥水 (小花眼藥水)</a></strong>
-                                            <p class="text-xs text-stone-500 mb-2">舒緩眼睛充血與疲勞，女孩必備。</p>
-                                        </div>
-                                        <div class="flex justify-between items-end border-t border-rose-50 pt-2 mt-2">
-                                            <span class="text-xs font-bold text-stone-700 bg-rose-100 px-2 py-0.5 rounded">目標：依需求</span>
-                                            <span class="font-bold text-rose-600">約 ¥450 - ¥600</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Shrines -->
-                        <div id="shop-shrine" class="shop-content fade-in">
-                            <div class="bg-orange-50 border border-orange-200 rounded-xl p-5">
-                                <h3 class="font-black text-orange-800 text-lg mb-2">神社參拜明細 (現金)</h3>
-                                <p class="text-sm text-orange-700 mb-4 pb-3 border-b border-orange-200">
-                                    此區塊列出各神籤與御守的精確價格，方便預留現金 (總計約 5,000円 / 1,100 TWD)。
-                                </p>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                                    <div class="bg-white p-3 rounded-lg border border-orange-100 shadow-sm">
-                                        <strong class="text-stone-900 block border-b border-orange-50 pb-1 mb-2"><a href="https://www.google.com/maps/search/?api=1&query=%E9%9B%A3%E6%B3%A2%E5%85%AB%E9%98%AA%E7%A5%9E%E7%A4%BE" target="_blank" class="hover:text-blue-600 transition-colors">難波八阪神社 (免門票)</a></strong>
-                                        <ul class="text-stone-600 space-y-1">
-                                            <li class="flex justify-between"><span>獅子頭神籤 (獅子みくじ)</span><span class="font-bold">500円</span></li>
-                                            <li class="flex justify-between"><span>退退御守 (除厄)</span><span class="font-bold">800円</span></li>
-                                        </ul>
-                                    </div>
-                                    <div class="bg-white p-3 rounded-lg border border-orange-100 shadow-sm">
-                                        <strong class="text-stone-900 block border-b border-orange-50 pb-1 mb-2"><a href="https://www.google.com/maps/search/?api=1&query=%E4%BC%8F%E8%A6%8B%E7%A8%BB%E8%8D%B7%E5%A4%A7%E7%A4%BE" target="_blank" class="hover:text-blue-600 transition-colors">伏見稻荷大社 (免門票)</a></strong>
-                                        <ul class="text-stone-600 space-y-1">
-                                            <li class="flex justify-between"><span>白狐神籤 (白狐みくじ)</span><span class="font-bold">500円</span></li>
-                                            <li class="flex justify-between"><span>迷你鳥居繪馬</span><span class="font-bold">800-1000円</span></li>
-                                        </ul>
-                                    </div>
-                                    <div class="bg-white p-3 rounded-lg border border-orange-100 shadow-sm">
-                                        <strong class="text-stone-900 block border-b border-orange-50 pb-1 mb-2"><a href="https://www.google.com/maps/search/?api=1&query=%E4%B8%89%E5%AE%A4%E6%88%B6%E5%AF%BA" target="_blank" class="hover:text-blue-600 transition-colors">三室戶寺 (京都宇治)</a></strong>
-                                        <ul class="text-stone-600 space-y-1">
-                                            <li class="flex justify-between"><span>門票 (紫陽花季)</span><span class="font-bold">1,000円</span></li>
-                                            <li class="flex justify-between text-pink-600"><span class="font-bold">紫陽花御守 (初夏必買)</span><span class="font-bold">800円</span></li>
-                                        </ul>
-                                    </div>
-                                    <div class="bg-white p-3 rounded-lg border border-orange-100 shadow-sm">
-                                        <strong class="text-stone-900 block border-b border-orange-50 pb-1 mb-2"><a href="https://www.google.com/maps/search/?api=1&query=%E5%B9%B3%E7%AD%89%E9%99%A2" target="_blank" class="hover:text-blue-600 transition-colors">平等院 (京都宇治)</a></strong>
-                                        <ul class="text-stone-600 space-y-1">
-                                            <li class="flex justify-between"><span>門票 (庭園+博物館)</span><span class="font-bold">600円</span></li>
-                                            <li class="flex justify-between"><span>鳳凰堂內部參觀 (可選)</span><span class="font-bold">+300円</span></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Donki -->
-                        <div id="shop-donki" class="shop-content fade-in">
-                            <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-5">
-                                <h3 class="font-black text-yellow-800 text-lg mb-2">驚安殿堂・唐吉訶德 戰區分析</h3>
-                                <p class="text-sm text-yellow-700 mb-4 pb-3 border-b border-yellow-200">
-                                    飯店走路 5 分鐘內就有 3 間 24H 分店。請避開人潮，選擇最適合的戰場買藥妝與零食。
-                                </p>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div class="space-y-3">
-                                        <div class="bg-white p-3 rounded-lg shadow-sm border border-yellow-100 flex items-start">
-                                            <span class="text-2xl mr-3">🎡</span>
-                                            <div>
-                                                <strong class="text-stone-800 block"><a href="https://www.google.com/maps/search/?api=1&query=%E5%94%90%E5%90%89%E8%A8%B6%E5%BE%B7+%E9%81%93%E9%A0%93%E5%A0%80%E5%BA%97" target="_blank" class="text-blue-600 hover:text-blue-800 transition-colors">道頓堀店 (御堂筋旁)</a></strong>
-                                                <p class="text-sm text-stone-600">有摩天輪。人潮爆炸結帳極久，建議純拍照打卡或買點零食飲料。</p>
-                                            </div>
-                                        </div>
-                                        <div class="bg-white p-3 rounded-lg shadow-sm border border-yellow-100 flex items-start relative overflow-hidden">
-                                            <div class="absolute right-0 top-0 h-full w-1 bg-yellow-400"></div>
-                                            <span class="text-2xl mr-3">🛒</span>
-                                            <div>
-                                                <strong class="text-stone-800 block"><a href="https://www.google.com/maps/search/?api=1&query=%E5%94%90%E5%90%89%E8%A8%B6%E5%BE%B7+%E5%8D%83%E6%97%A5%E5%89%8D%E5%BA%97" target="_blank" class="text-blue-600 hover:text-blue-800 transition-colors">千日前店 (難波正中心)</a></strong>
-                                                <p class="text-sm text-stone-600 font-bold text-yellow-700">距離飯店最近 (3分鐘)！大採買主戰場。</p>
-                                            </div>
-                                        </div>
-                                        <div class="bg-white p-3 rounded-lg shadow-sm border border-yellow-100 flex items-start relative overflow-hidden">
-                                            <div class="absolute right-0 top-0 h-full w-1 bg-yellow-400"></div>
-                                            <span class="text-2xl mr-3">🏢</span>
-                                            <div>
-                                                <strong class="text-stone-800 block"><a href="https://www.google.com/maps/search/?api=1&query=%E5%94%90%E5%90%89%E8%A8%B6%E5%BE%B7+%E5%BE%A1%E5%A0%82%E7%AD%8B%E5%BA%97" target="_blank" class="text-blue-600 hover:text-blue-800 transition-colors">御堂筋店 (近心齋橋)</a></strong>
-                                                <p class="text-sm text-stone-600 font-bold text-yellow-700">三間中走道最寬敞！推車購物最舒服。</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="bg-white p-4 rounded-lg shadow-sm border border-yellow-300">
-                                        <strong class="text-yellow-800 block border-b border-yellow-100 pb-2 mb-2 flex items-center"><span class="mr-2">🛒</span>推薦採購清單</strong>
-                                        <ul class="text-sm text-stone-600 space-y-2">
-                                            <li><span class="font-bold text-stone-800">零食伴手禮：</span> UHA 味覺糖、Pocky 關西限定、一蘭拉麵泡麵、Alfort 巧克力餅乾。</li>
-                                            <li><span class="font-bold text-stone-800">實用小物：</span> 休足時間 (每天回飯店必貼)、花王蒸氣眼罩。</li>
-                                            <li><span class="font-bold text-stone-800">飲料消夜：</span> 第一天不喝酒沒關係，買午後紅茶、地區限定果汁，回飯店配炸雞串吃。</li>
-                                            <li><span class="font-bold text-stone-800">藥妝補貨：</span> 正露丸、Cabagin 胃腸藥、樂敦妮婕眼藥水可在此一次買齊退稅。</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Airport -->
-                        <div id="shop-airport" class="shop-content fade-in">
-                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-5">
-                                <h3 class="font-black text-slate-800 text-lg mb-2">✈️ 關西機場 T1 最終撤退攻略</h3>
-                                <p class="text-sm text-slate-600 mb-4 pb-3 border-b border-slate-200">
-                                    機場免稅店不佔用 20kg 託運額度 (虎航手提限 10kg)，是買伴手禮的最佳時機。
-                                </p>
-                                <ul class="space-y-4 text-sm text-stone-700">
-                                    <li class="flex items-start bg-white p-3 rounded-lg border border-slate-100 shadow-sm">
-                                        <span class="text-2xl mr-3">🛍️</span>
-                                        <div>
-                                            <strong class="block text-stone-900 text-base">KIX DUTY FREE (過安檢後)</strong>
-                                            <p class="text-stone-600 mt-1">必買清單：Royce' 生巧克力 (<span class="text-red-500 font-bold">務必加購保冷袋</span>)、薯條三兄弟、白色戀人、LeTAO 起司蛋糕。</p>
-                                        </div>
+                        <!-- Drugstore & Souvenirs Strategy -->
+                        <div class="bg-rose-50 border border-rose-200 rounded-xl p-5 shadow-sm relative overflow-hidden md:col-span-2">
+                            <div class="absolute top-0 right-0 bg-rose-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">孝親自用清單</div>
+                            <h3 class="font-black text-rose-800 flex items-center mb-3 text-lg">
+                                <span class="mr-2">💊</span> 藥妝 & 伴手禮專區
+                            </h3>
+                            <p class="text-xs font-bold text-rose-600 mb-3 border-b border-rose-200 pb-2">
+                                📍 戰略點：優先在 <a href="https://www.google.com/maps/search/?api=1&query=%E5%BF%83%E9%BD%8B%E6%A9%8B%E7%AD%8B%E5%95%86%E5%BA%97%E8%A1%97" target="_blank" class="underline hover:text-rose-900">心齋橋筋</a> 比價，或在旁邊的唐吉訶德一次買齊。
+                            </p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-stone-700">
+                                <ul class="space-y-2">
+                                    <li class="flex justify-between items-start bg-white p-2 rounded-lg border border-rose-100">
+                                        <div><strong class="text-stone-900 block">日本喇叭牌正露丸 (400粒)</strong><span class="text-xs text-stone-500">居家常備腸胃藥</span></div>
+                                        <span class="font-bold text-rose-700 whitespace-nowrap">~¥1,800-2,200</span>
                                     </li>
-                                    <li class="flex items-start bg-white p-3 rounded-lg border border-slate-100 shadow-sm">
-                                        <span class="text-2xl mr-3">🎮</span>
-                                        <div>
-                                            <strong class="block text-stone-900 text-base">任天堂與寶可夢專區 (Nintendo Check-in)</strong>
-                                            <p class="text-stone-600 mt-1">尋找穿著機長裝的限定皮卡丘，市區沒買夠的最後機會。</p>
-                                        </div>
+                                    <li class="flex justify-between items-start bg-white p-2 rounded-lg border border-rose-100">
+                                        <div><strong class="text-stone-900 block">Cabagin 胃腸藥 (300錠)</strong><span class="text-xs text-stone-500">修復胃黏膜必備</span></div>
+                                        <span class="font-bold text-rose-700 whitespace-nowrap">~¥1,800-2,000</span>
                                     </li>
-                                    <li class="flex items-start bg-white p-3 rounded-lg border border-slate-100 shadow-sm">
-                                        <span class="text-2xl mr-3">🥟</span>
-                                        <div>
-                                            <strong class="block text-stone-900 text-base">551 蓬萊肉包 (T1 2F 安檢前)</strong>
-                                            <p class="text-stone-600 mt-1">若市區沒吃到，可在這買了當場吃。再次警告：<span class="font-bold text-red-600">絕對不可帶回台灣</span>。</p>
-                                        </div>
+                                    <li class="flex justify-between items-start bg-white p-2 rounded-lg border border-rose-100">
+                                        <div><strong class="text-stone-900 block">大正 ASCLON 止咳藥</strong><span class="text-xs text-stone-500">針對氣喘 (24包)</span></div>
+                                        <span class="font-bold text-rose-700 whitespace-nowrap">~¥1,400-1,800</span>
                                     </li>
-                                    <li class="flex items-start bg-white p-3 rounded-lg border border-slate-100 shadow-sm">
-                                        <span class="text-2xl mr-3">🔭</span>
-                                        <div>
-                                            <strong class="block text-stone-900 text-base">KIX 展望台 (Sky View)</strong>
-                                            <p class="text-stone-600 mt-1">若提早 3-4 小時到機場可搭接駁車前往看飛機。但建議留時間在航廈內逛免稅比較輕鬆。</p>
-                                        </div>
+                                </ul>
+                                <ul class="space-y-2">
+                                    <li class="flex justify-between items-start bg-white p-2 rounded-lg border border-rose-100">
+                                        <div><strong class="text-stone-900 block"><a href="https://www.rohto.com.tw/lycee.html" target="_blank" class="hover:text-blue-600 transition-colors underline">樂敦妮婕眼藥水</a></strong><span class="text-xs text-stone-500">舒緩充血小花眼藥水</span></div>
+                                        <span class="font-bold text-rose-700 whitespace-nowrap">~¥450-600</span>
+                                    </li>
+                                    <li class="flex justify-between items-start bg-white p-2 rounded-lg border border-rose-100">
+                                        <div><strong class="text-stone-900 block">S&B 一味唐辛子</strong><span class="text-xs text-stone-500">國民調味料 (唐吉訶德)</span></div>
+                                        <span class="font-bold text-rose-700 whitespace-nowrap">~¥150-200</span>
+                                    </li>
+                                    <li class="flex justify-between items-start bg-rose-100 p-2 rounded-lg border border-rose-200">
+                                        <div><strong class="text-rose-900 block">GRAND Calbee 洋芋片</strong><span class="text-xs text-rose-700">⚠️ <span class="underline font-bold">藥妝店無販售</span></span></div>
+                                        <span class="text-xs font-bold text-rose-800 text-right">Day 4 至<br>梅田阪急 B1 買</span>
                                     </li>
                                 </ul>
                             </div>
@@ -731,20 +463,20 @@
 
                     </div>
                 </section>
-
             </div>
         </div>
     </div>
 
-    <!-- Application Logic -->
     <script>
         // Tab switching logic for Itinerary
         function switchTimeline(targetId, btnElement) {
+            // Content handling
             document.querySelectorAll('.timeline-content').forEach(el => {
                 el.classList.remove('active');
             });
             document.getElementById(targetId).classList.add('active');
 
+            // Button styling handling
             document.querySelectorAll('.timeline-btn').forEach(btn => {
                 btn.classList.remove('active');
                 btn.classList.add('bg-stone-100', 'text-stone-500');
@@ -753,29 +485,34 @@
             btnElement.classList.add('active');
         }
 
-        // Tab switching logic for Shopping Intel (Pill Buttons)
+        // Tab switching logic for Shopping Intel
         function switchShop(targetId, btnElement) {
+            // Content handling
             document.querySelectorAll('.shop-content').forEach(el => {
                 el.classList.remove('active');
             });
             document.getElementById(targetId).classList.add('active');
 
+            // Button styling handling
             document.querySelectorAll('.shop-btn').forEach(btn => {
-                btn.classList.remove('active', 'bg-pink-100', 'text-pink-800', 'font-bold');
-                btn.classList.add('bg-stone-100', 'text-stone-600', 'font-medium');
+                btn.classList.remove('active', 'font-bold');
+                btn.classList.add('font-medium');
+                btn.style.borderBottomColor = 'transparent';
+                btn.style.color = '#a8a29e'; // text-stone-400
             });
-            btnElement.classList.remove('bg-stone-100', 'text-stone-600', 'font-medium');
-            btnElement.classList.add('active', 'bg-pink-100', 'text-pink-800', 'font-bold');
+            btnElement.classList.add('active', 'font-bold');
+            btnElement.style.borderBottomColor = '#db2777'; // pink-600
+            btnElement.style.color = '#db2777';
         }
 
         // Chart.js Initialization
         document.addEventListener('DOMContentLoaded', () => {
             const ctx = document.getElementById('budgetChart').getContext('2d');
             
-            // Core Budget Data
+            // Core Budget Data (Based on user constraints/report)
             const data = [18240, 5750, 3600, 19750];
             const labels = ['機加酒 (固定)', '餐飲美食', '交通與參拜', '極致血拼額度'];
-            const bgColors = ['#3b82f6', '#fb923c', '#22c55e', '#ec4899']; 
+            const bgColors = ['#3b82f6', '#fb923c', '#22c55e', '#ec4899']; // Tailwind Blue, Orange, Green, Pink
 
             new Chart(ctx, {
                 type: 'doughnut',
@@ -791,17 +528,17 @@
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: false, 
+                    maintainAspectRatio: false, // Critical for custom responsive container
                     cutout: '72%',
                     layout: {
                         padding: 10
                     },
                     plugins: {
                         legend: {
-                            display: false 
+                            display: false // Hidden because we built a custom HTML legend below the chart
                         },
                         tooltip: {
-                            backgroundColor: 'rgba(28, 25, 23, 0.95)', 
+                            backgroundColor: 'rgba(28, 25, 23, 0.95)', // stone-900
                             titleFont: { size: 14, family: "'Noto Sans TC', sans-serif" },
                             bodyFont: { size: 13, family: "'Noto Sans TC', sans-serif", weight: 'bold' },
                             padding: 12,
